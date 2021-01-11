@@ -1,0 +1,9 @@
+.look-password {
+    position: absolute;
+    top: 43px;
+    right: 30px;
+    cursor: pointer;
+}
+.form-group {
+    position: relative;
+}
