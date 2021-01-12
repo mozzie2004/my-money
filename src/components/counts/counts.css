@@ -1,0 +1,19 @@
+.counts__list {
+    margin-top: 30px;
+    padding: 0;
+}
+
+.counts__item {
+    margin-top: 10px;
+    padding: 0 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid;
+    font-size: 20px;
+    height: 50px;
+}
+.counts__total {
+    margin-top: 50px;
+    border-bottom: 3px solid;
+}

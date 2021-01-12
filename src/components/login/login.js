@@ -1,16 +1,20 @@
 import React, {useState} from 'react';
+import {connect} from 'react-redux';
+import {addErrorLogin, addErrorLoginMessage} from '../../actions';
 import {Button, Modal, Form} from 'react-bootstrap';
 import firebase from "firebase/app";
 import {faEye} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import SpinnerSmall from '../spinner-small/spinner-small';
 import "firebase/auth";
 
-function Login({show, handleClose}) {
+function Login({show, handleClose, error, errorMessage, addErrorLogin, addErrorLoginMessage}) {
 
     const [user, setUser] = useState({});
-    const [error, setError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [validated, setValidated] = useState(false);
+    
+    
 
     const onPasswordVisible = (e)=> {
         const input = e.currentTarget.previousSibling;
@@ -38,24 +42,26 @@ function Login({show, handleClose}) {
             return
         }
         
-        
+        setLoading(true);
         firebase.auth().signInWithEmailAndPassword(user.email, user.password)
         .then((user) => {
-            console.log(user);
+            setLoading(false)
+            addErrorLogin(false);
             handleClose();
             setValidated(false);
         })
         .catch((error) => {
             const errorMessage = error.message;
-            setError(true);
-            setErrorMessage(errorMessage)  
+            addErrorLogin(true);
+            setLoading(false)
+            addErrorLoginMessage(errorMessage)  
         });
 
     }
 
-  
+    const spiner = loading ? <SpinnerSmall/> : '';
+
     return (
-      <>
         <Modal show={show}  onHide={handleClose} animation={true}>
             <Modal.Header closeButton>
                 <Modal.Title>Login</Modal.Title>
@@ -81,11 +87,18 @@ function Login({show, handleClose}) {
                         Submit
                     </Button>
                     <div>{error ? errorMessage : ''}</div>
+                    {spiner}
                 </Form>
             </Modal.Body>
         </Modal>
-      </>
     );
   }
   
-  export default Login;
+  const mapStateToProps = ({error, errorMessage}) => {
+      return {
+          error: error.errorLogin,
+          errorMessage: errorMessage.messageLogin
+      }
+  }
+
+  export default connect(mapStateToProps, {addErrorLogin, addErrorLoginMessage})(Login);

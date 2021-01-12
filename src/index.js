@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
 import App from './components/app/app';
+import store from './store/store';
 import {BrowserRouter as Router} from 'react-router-dom';
 import firebase from "firebase/app";
+import {addUser, removeUser} from './actions';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -18,10 +21,21 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     measurementId: "G-JZL3CB20NN"
   });
 
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+      store.dispatch(addUser(user));
+    } else {
+      store.dispatch(removeUser());
+    }
+  });
+
+
 ReactDOM.render(
-  <Router>
-       <App />  
-  </Router>,
+  <Provider store={store}>
+    <Router>
+        <App />  
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );
 

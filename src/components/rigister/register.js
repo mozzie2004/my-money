@@ -1,17 +1,16 @@
 import React, {useState} from 'react';
+import {connect} from 'react-redux';
 import {Button, Modal, Form} from 'react-bootstrap';
 import firebase from "firebase/app";
 import {faEye} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import "firebase/auth";
 
-function Register({show, handleClose}) {
-
+function Register({show, handleClose, addUser, curentUser}) {
     const [user, setUser] = useState({});
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [validated, setValidated] = useState(false);
-
     const onPasswordVisible = (e)=> {
         const input = e.currentTarget.previousSibling;
         input.setAttribute('type', 'text');
@@ -63,7 +62,6 @@ function Register({show, handleClose}) {
         
         firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
         .then((user) => {
-            console.log(user);
             handleClose();
             setValidated(false);
         })
@@ -116,4 +114,12 @@ function Register({show, handleClose}) {
     );
   }
   
-  export default Register;
+  const mapStateToProps = ({curentUser}) => {
+      return {
+        curentUser
+      }
+  }
+
+  
+
+  export default connect(mapStateToProps)(Register);
