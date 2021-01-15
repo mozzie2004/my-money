@@ -3,25 +3,33 @@ import {connect} from 'react-redux';
 import {Button, Container} from 'react-bootstrap';
 import Count from '../count/count';
 import AddCount from '../add-count/add-count';
-import {countsLoaded} from '../../actions';
+import {countsLoaded, setLoadingCounts} from '../../actions';
 import firebase from "firebase"; 
+import Spinner from '../spinner/spinner';
 
 import './counts.css'
 
-const Counts = ({counts, countsLoaded}) => {
+const Counts = ({counts, countsLoaded, curentUser, countsDef, loadingCounts, setLoadingCounts}) => {
 const [show, setShow] = useState(false);
 
 useEffect(()=>{
     let data = [];
-    firebase.firestore().collection("counts").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            const newItem = {...doc.data(), id: doc.id}
-            data = [...data, newItem]
+    if (curentUser){
+        setLoadingCounts(true)
+        firebase.firestore().collection(`${curentUser.uid}Counts`).get().then((querySnapshot) => {
+            setLoadingCounts(false)
+            querySnapshot.forEach((doc) => {
+                const newItem = {...doc.data(), id: doc.id}
+                data = [...data, newItem]
+            });
+            countsLoaded(data);
         });
-        countsLoaded(data);
-    });
+    } else {
+        countsLoaded(countsDef);
+    }
     
-}, []);
+    
+}, [curentUser, countsLoaded, countsDef, setLoadingCounts]);
     
 
 
@@ -39,7 +47,7 @@ const handleShow = () => setShow(true);
     }
 
     let count;
-    if (counts.length !== 0) {
+    if (!loadingCounts) {
         count = (
             counts.map(item=>{
                 const {title, sum, id} = item;
@@ -49,10 +57,10 @@ const handleShow = () => setShow(true);
             })
         )
     } else {
-        count = '';
+        count = <Spinner/>;
     }
     
-    
+    const listTitle = curentUser ? 'Мої рахунки' : 'Мої рахунки (Для прикладу)'
 
     return (
         <Container>
@@ -60,6 +68,7 @@ const handleShow = () => setShow(true);
             <div className="d-flex justify-content-end mt-2">
                 <Button onClick={handleShow} variant="primary">Добавити рахунок</Button>
             </div>
+            <h1 className="text-center">{listTitle}</h1>
             <ul className="counts__list">
                {count}
             </ul>
@@ -71,10 +80,13 @@ const handleShow = () => setShow(true);
     )
 }
 
-const mapStateToProps = ({counts}) => {
+const mapStateToProps = ({counts, curentUser, countsDef, loading}) => {
     return {
-        counts
+        counts,
+        curentUser,
+        countsDef,
+        loadingCounts: loading.loadingCounts
     }
 }
 
-export default connect(mapStateToProps, {countsLoaded})(Counts);
+export default connect(mapStateToProps, {countsLoaded, setLoadingCounts})(Counts);

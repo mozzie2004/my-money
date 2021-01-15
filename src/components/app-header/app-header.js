@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Navbar, Nav, NavDropdown, Container, Col, Row, Popover, OverlayTrigger, Spinner} from 'react-bootstrap';
+import {Navbar, Nav, NavDropdown, Container, Col, Row, Popover, OverlayTrigger} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import Register from '../rigister/register';
@@ -7,9 +7,9 @@ import Login from '../login/login'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faBalanceScale, faCoins, faExchangeAlt, faCog} from '@fortawesome/free-solid-svg-icons';
 import firebase from 'firebase';
-import {removeUser, addErrorLogin} from '../../actions';
+import {addErrorLogin, countsLoaded} from '../../actions';
 
-const AppHeader = ({curentUser, removeUser, addErrorLogin}) =>{
+const AppHeader = ({curentUser, addErrorLogin}) =>{
 
     const [registerShow, setRegisterShow] = useState(false);
     const [loginShow, setLoginShow] = useState(false);
@@ -103,8 +103,8 @@ const mapStateToProps = ({curentUser}) => {
 }
 
 const mapDispatchToProps = {
-    removeUser,
-    addErrorLogin
+    addErrorLogin,
+    countsLoaded
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AppHeader);

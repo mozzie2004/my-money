@@ -39,11 +39,20 @@ const addErrorLoginMessage = (message)=>{
     }
 }
 
+const setLoadingCounts = (boolen)=>{
+    return {
+        type: 'LOADING-COUNTS',
+        payload: boolen
+    }
+}
+
+
 export {
     countsLoaded,
     addUser,
     removeUser,
     addNewCount,
     addErrorLogin,
-    addErrorLoginMessage
+    addErrorLoginMessage,
+    setLoadingCounts
 }

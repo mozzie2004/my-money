@@ -4,7 +4,7 @@ import firebase from 'firebase';
 import {connect} from 'react-redux';
 import {addNewCount} from '../../actions';
 
-const AddCount = ({show, handleClose, addNewCount}) => {
+const AddCount = ({show, counts, handleClose, addNewCount, curentUser}) => {
     const [newCount, setNewCount] = useState({});
     const [validated, setValidated] = useState(false);
 
@@ -34,18 +34,24 @@ const AddCount = ({show, handleClose, addNewCount}) => {
             return
         }
 
-        db.collection("counts").add({
-            title: newCount.title,
-            sum: newCount.sum,
-        })
-        .then(function(docRef) {
-            addNewCount({title: newCount.title, sum: newCount.sum, id: docRef.id});
-            setValidated(false);
-            handleClose();
-        })
-        .catch(function(error) {
-            console.error("Error adding count: ", error);
-    });
+        if(curentUser) {
+            db.collection(`${curentUser.uid}Counts`).add({
+                title: newCount.title,
+                sum: newCount.sum,
+            })
+            .then(function(docRef) {
+                addNewCount({title: newCount.title, sum: newCount.sum, id: docRef.id});
+                setValidated(false);
+                handleClose();
+            })
+            .catch(function(error) {
+                console.error("Error adding count: ", error);
+        });
+        } else {
+            const id = Math.max(...counts.map(item => item.id)); 
+            addNewCount({title: newCount.title, sum: newCount.sum, id: id+1});
+        }
+
     }
 
     return (
@@ -77,9 +83,10 @@ const AddCount = ({show, handleClose, addNewCount}) => {
       );
 }
 
-const mapStateToProps = ({counts})=> {
+const mapStateToProps = ({counts, curentUser})=> {
     return {
-        counts
+        counts,
+        curentUser
     }
 }
 

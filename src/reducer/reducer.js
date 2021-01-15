@@ -1,12 +1,17 @@
+import dbDefault from '../db-default';
 let initialState = {
    counts: [],
    curentUser: null,
+   loading: {
+       loadingCounts: false
+   },
    error: {
        errorLogin: false
    },
    errorMessage: {
        messageLogin: ''
-   }
+   },
+   ...dbDefault
 }
 
 const reducer = (state=initialState, action) => {
@@ -46,6 +51,13 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 errorMessage: {...state.errorMessage, messageLogin: action.payload}
             }
+
+        case 'LOADING-COUNTS':
+            return {
+                ...state,
+                loading: {...state.loading, loadingCounts: action.payload}
+            }
+
               
         default:
             return {
