@@ -5,6 +5,39 @@ const countsLoaded = (counts)=>{
     }
 }
 
+const countsRequested = ()=>{
+    return {
+        type: 'COUNTS-REQUESTED'
+    }
+}
+
+const operationsLoaded = (operations)=>{
+    return {
+        type: 'OPERATIONS-LOADED',
+        payload: operations
+    }
+}
+
+const addNewOperations = (operations)=>{
+    return {
+        type: 'ADD-NEW-OPERATIONS',
+        payload: operations
+    }
+}
+
+const operationsRequested = ()=>{
+    return {
+        type: 'OPERATIONS-LOADED'
+    }
+}
+
+const groupesLoaded = (groupes)=>{
+    return {
+        type: 'GROUPES-LOADED',
+        payload: groupes
+    }
+}
+
 const addUser = (user)=>{
     return {
         type: 'ADD-USER',
@@ -25,6 +58,14 @@ const addNewCount = (count)=>{
     }
 }
 
+const addNewCountOperation = (id, sum)=>{
+    return {
+        type: 'ADD-NEW-COUNT-OPERATION',
+        payload: sum,
+        id
+    }
+}
+
 const addErrorLogin = (boolen)=>{
     return {
         type: 'ADD-ERROR-LOGIN',
@@ -39,12 +80,7 @@ const addErrorLoginMessage = (message)=>{
     }
 }
 
-const setLoadingCounts = (boolen)=>{
-    return {
-        type: 'LOADING-COUNTS',
-        payload: boolen
-    }
-}
+
 
 
 export {
@@ -54,5 +90,10 @@ export {
     addNewCount,
     addErrorLogin,
     addErrorLoginMessage,
-    setLoadingCounts
+    countsRequested,
+    operationsLoaded,
+    operationsRequested,
+    groupesLoaded,
+    addNewOperations,
+    addNewCountOperation
 }

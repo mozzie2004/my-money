@@ -5,7 +5,7 @@ import App from './components/app/app';
 import store from './store/store';
 import {BrowserRouter as Router} from 'react-router-dom';
 import firebase from "firebase/app";
-import {addUser, removeUser} from './actions';
+import {addUser, removeUser, countsLoaded, operationsLoaded, groupesLoaded} from './actions';
 
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -21,22 +21,27 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     measurementId: "G-JZL3CB20NN"
   });
 
+  
+
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       store.dispatch(addUser(user));
     } else {
       store.dispatch(removeUser());
+      store.dispatch(countsLoaded(store.getState().countsDef));
+      store.dispatch(operationsLoaded(store.getState().operationsDef));
+      store.dispatch(groupesLoaded(store.getState().groupeDef));
     }
   });
 
+  ReactDOM.render(
+    <Provider store={store}>
+      <Router>
+          <App />  
+      </Router>
+    </Provider>,
+    document.getElementById('root')
+  );
 
-ReactDOM.render(
-  <Provider store={store}>
-    <Router>
-        <App />  
-    </Router>
-  </Provider>,
-  document.getElementById('root')
-);
 
 

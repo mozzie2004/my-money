@@ -65,7 +65,7 @@ const AppHeader = ({curentUser, addErrorLogin}) =>{
                     <Col xs={6}>
                         <Nav className="d-flex flex-row justify-content-around mt-2">
                         <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover('Мої рахунки')}>
-                            <Link to='#'>
+                            <Link to='/'>
                                 <FontAwesomeIcon icon={faBalanceScale} /> 
                             </Link>
                         </OverlayTrigger>
@@ -75,7 +75,7 @@ const AppHeader = ({curentUser, addErrorLogin}) =>{
                             </Link>
                         </OverlayTrigger>
                         <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover('Транзакції')}>
-                            <Link to='#'>
+                            <Link to='/operations'>
                                 <FontAwesomeIcon icon={faExchangeAlt} />
                             </Link>
                         </OverlayTrigger>

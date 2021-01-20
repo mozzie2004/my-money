@@ -1,9 +1,12 @@
 import dbDefault from '../db-default';
 let initialState = {
    counts: [],
+   operations: [],
+   groupe: [],
    curentUser: null,
    loading: {
-       loadingCounts: false
+       loadingCounts: true,
+       loadingOperation: false
    },
    error: {
        errorLogin: false
@@ -19,7 +22,37 @@ const reducer = (state=initialState, action) => {
         case 'COUNTS-LOADED':
             return {
                 ...state,
+                loading: {...state.loading, loadingCounts: false},
                 counts: action.payload
+            }
+        case 'COUNTS-REQUESTED':
+            return {
+                ...state,
+                loading: {...state.loading, loadingCounts: true}
+            }
+
+        case 'OPERATIONS-LOADED':
+            return {
+                ...state,
+                operations: action.payload,
+                loading: {...state.loading, loadingOperation: false}
+            }
+        case 'OPERATIONS-REQUESTED':
+            return {
+                ...state,
+                loading: {...state.loading, loadingOperation: true}
+            }
+
+        case 'ADD-NEW-OPERATIONS':
+            return {
+                ...state,
+                operations: [...state.operations, action.payload]
+            }
+
+        case 'GROUPES-LOADED':
+            return {
+                ...state,
+                groupe: action.payload
             }
         
         case 'ADD-USER':
@@ -40,6 +73,14 @@ const reducer = (state=initialState, action) => {
                 counts: [...state.counts, action.payload]
             }
 
+        case 'ADD-NEW-COUNT-OPERATION':
+            const index = state.counts.findIndex(item=>item.id === action.id)
+            const newItem = {...state.counts[index], sum: state.counts[index].sum + action.payload};
+            return {
+                ...state,
+                counts: [...state.counts.slice(0, index), newItem, ...state.counts.slice(index+1)]
+            }
+
         case 'ADD-ERROR-LOGIN':
             return {
                 ...state,
@@ -51,13 +92,6 @@ const reducer = (state=initialState, action) => {
                 ...state,
                 errorMessage: {...state.errorMessage, messageLogin: action.payload}
             }
-
-        case 'LOADING-COUNTS':
-            return {
-                ...state,
-                loading: {...state.loading, loadingCounts: action.payload}
-            }
-
               
         default:
             return {

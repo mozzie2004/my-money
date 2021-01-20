@@ -3,33 +3,23 @@ import {connect} from 'react-redux';
 import {Button, Container} from 'react-bootstrap';
 import Count from '../count/count';
 import AddCount from '../add-count/add-count';
-import {countsLoaded, setLoadingCounts} from '../../actions';
-import firebase from "firebase"; 
+import {countsLoaded, countsRequested} from '../../actions';
+import firebaseService from '../../services/fierbaseService'; 
 import Spinner from '../spinner/spinner';
+
 
 import './counts.css'
 
-const Counts = ({counts, countsLoaded, curentUser, countsDef, loadingCounts, setLoadingCounts}) => {
+const Counts = ({counts, countsLoaded, curentUser, countsDef, loadingCounts, countsRequested}) => {
 const [show, setShow] = useState(false);
 
 useEffect(()=>{
-    let data = [];
     if (curentUser){
-        setLoadingCounts(true)
-        firebase.firestore().collection(`${curentUser.uid}Counts`).get().then((querySnapshot) => {
-            setLoadingCounts(false)
-            querySnapshot.forEach((doc) => {
-                const newItem = {...doc.data(), id: doc.id}
-                data = [...data, newItem]
-            });
-            countsLoaded(data);
-        });
-    } else {
-        countsLoaded(countsDef);
-    }
+        const firebase = new firebaseService();
+        firebase.getData(`${curentUser.uid}Counts`, countsLoaded, countsRequested)
+    } 
     
-    
-}, [curentUser, countsLoaded, countsDef, setLoadingCounts]);
+}, [curentUser, countsLoaded, countsDef, countsRequested]);
     
 
 
@@ -47,7 +37,7 @@ const handleShow = () => setShow(true);
     }
 
     let count;
-    if (!loadingCounts) {
+    if (!loadingCounts && counts) {
         count = (
             counts.map(item=>{
                 const {title, sum, id} = item;
@@ -89,4 +79,4 @@ const mapStateToProps = ({counts, curentUser, countsDef, loading}) => {
     }
 }
 
-export default connect(mapStateToProps, {countsLoaded, setLoadingCounts})(Counts);
+export default connect(mapStateToProps, {countsLoaded, countsRequested})(Counts);
