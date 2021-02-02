@@ -58,6 +58,13 @@ const addNewCount = (count)=>{
     }
 }
 
+const addNewGroupe = (groupe)=>{
+    return {
+        type: 'ADD-NEW-GROUPE',
+        payload: groupe
+    }
+}
+
 const addNewCountOperation = (id, sum)=>{
     return {
         type: 'ADD-NEW-COUNT-OPERATION',
@@ -95,5 +102,6 @@ export {
     operationsRequested,
     groupesLoaded,
     addNewOperations,
-    addNewCountOperation
+    addNewCountOperation,
+    addNewGroupe
 }

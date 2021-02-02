@@ -1,26 +1,18 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
 import { Container, ProgressBar } from 'react-bootstrap';
+import sortService from '../../services/sortService';
 import MyChart from '../chart/chart';
-import { operationsLoaded, groupesLoaded } from '../../actions';
-import firebaseService from '../../services/fierbaseService';
 
 
 import './report.css';
 
-const Report = ({operations, groupe, curentUser, operationsLoaded, groupesLoaded, operationsDef, groupeDef}) => {
-    
-    useEffect(()=>{
-        const firebase = new firebaseService();
-        if (curentUser){
-            firebase.getData(`${curentUser.uid}Operations`, operationsLoaded);
-            firebase.getData(`${curentUser.uid}Groupes`, groupesLoaded);
-        } 
-    }, [curentUser, groupesLoaded, operationsLoaded, operationsDef, groupeDef]);
+const Report = ({operations, groupe}) => {
 
-    
+    new sortService().groupedByMonth(operations);
+        
     const operationsSortByDate = operations.sort((a, b)=>a.date - b.date);
-    const labels = [...new Set(operationsSortByDate.map(item=>(item.date).toLocaleDateString('uk', {month: 'long', year: 'numeric'})))];
+    const labels = [...new Set(operationsSortByDate.map(item=>(new Date(item.date)).toLocaleDateString('uk', {month: 'long', year: 'numeric'})))];
     // фомуємо масив витратних і дохідних груп
     const groupePluse = groupe.filter(item=>item.type === 'earnings');
     const groupeMinus = groupe.filter(item=>item.type === 'expenses');
@@ -30,8 +22,8 @@ const Report = ({operations, groupe, curentUser, operationsLoaded, groupesLoaded
     const groupOperByType = arrGroupType => {
         return operationsSortByDate.filter(item=>(arrGroupType.filter(itemGr=>itemGr.name === item.groupe).length > 0))
     }
-    const earnings = operations.length > 0 && groupe.length > 0 ? groupOperByType(groupePluse).map(item=>item.sum).reduce((a, b)=> a+ b) : 0;
-    const expenses = operations.length > 0 && groupe.length > 0 ? groupOperByType(groupeMinus).map(item=>item.sum).reduce((a, b)=> a+ b) : 0;
+    const earnings = operations.length > 0 && groupOperByType(groupePluse).length > 0 ? groupOperByType(groupePluse).map(item=>item.sum).reduce((a, b)=> a+ b) : 0;
+    const expenses = operations.length > 0 && groupOperByType(groupeMinus).length > 0 ? groupOperByType(groupeMinus).map(item=>item.sum).reduce((a, b)=> a+ b, 0) : 0;
     const totalOperations = earnings + -expenses;
     const fractionsEarnings = totalOperations !== 0 ? Math.floor(earnings/totalOperations*100) : 0;
     const fractionsExpenses = totalOperations !== 0 ? 100-fractionsEarnings : 0;
@@ -44,7 +36,7 @@ const Report = ({operations, groupe, curentUser, operationsLoaded, groupesLoaded
         let obj = {}
         groupOperByType(arrGroupType).forEach((item) => {
          labels.forEach((itemLabel, i)=>{
-            if (itemLabel === item.date.toLocaleDateString('uk', {month: 'long', year: 'numeric'})) {
+            if (itemLabel === new Date(item.date).toLocaleDateString('uk', {month: 'long', year: 'numeric'})) {
                 if (obj[i]) {
                     obj[i] = [...obj[i], item.sum]
                 } else {
@@ -85,7 +77,7 @@ const Report = ({operations, groupe, curentUser, operationsLoaded, groupesLoaded
             },
             {
                 label: 'Видатки',
-                data: setArrData(setObjData(groupeMinus)),
+                data: setArrData(setObjData(groupeMinus)).map(item=>-item),
                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                 borderColor: 'rgba(255, 99, 132, 1)',
                 borderWidth: 1
@@ -129,14 +121,11 @@ const Report = ({operations, groupe, curentUser, operationsLoaded, groupesLoaded
     
 }
 
-const mapStateToProps = ({operations, groupe, curentUser, operationsDef, groupeDef})=>{
+const mapStateToProps = ({operations, groupe})=>{
     return {
         operations,
-        groupe,
-        curentUser,
-        operationsDef,
-        groupeDef
+        groupe
     }
 }
 
-export default connect(mapStateToProps, {operationsLoaded, groupesLoaded })(Report);
+export default connect(mapStateToProps)(Report);

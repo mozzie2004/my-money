@@ -1,27 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {connect} from 'react-redux';
 import {Button, Container} from 'react-bootstrap';
 import Count from '../count/count';
 import AddCount from '../add-count/add-count';
-import {countsLoaded, countsRequested} from '../../actions';
-import firebaseService from '../../services/fierbaseService'; 
 import Spinner from '../spinner/spinner';
 
 
 import './counts.css'
 
-const Counts = ({counts, countsLoaded, curentUser, countsDef, loadingCounts, countsRequested}) => {
+const Counts = ({counts, curentUser, loadingCounts}) => {
 const [show, setShow] = useState(false);
-
-useEffect(()=>{
-    if (curentUser){
-        const firebase = new firebaseService();
-        firebase.getData(`${curentUser.uid}Counts`, countsLoaded, countsRequested)
-    } 
-    
-}, [curentUser, countsLoaded, countsDef, countsRequested]);
-    
-
 
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
@@ -70,13 +58,12 @@ const handleShow = () => setShow(true);
     )
 }
 
-const mapStateToProps = ({counts, curentUser, countsDef, loading}) => {
+const mapStateToProps = ({counts, curentUser, loading}) => {
     return {
         counts,
         curentUser,
-        countsDef,
         loadingCounts: loading.loadingCounts
     }
 }
 
-export default connect(mapStateToProps, {countsLoaded, countsRequested})(Counts);
+export default connect(mapStateToProps)(Counts);

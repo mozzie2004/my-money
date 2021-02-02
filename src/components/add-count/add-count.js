@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Modal, Button, Form} from 'react-bootstrap';
-import firebase from 'firebase';
 import {connect} from 'react-redux';
 import {addNewCount} from '../../actions';
+import firebaseService from '../../services/fierbaseService';
 
 const AddCount = ({show, counts, handleClose, addNewCount, curentUser}) => {
     const [newCount, setNewCount] = useState({});
@@ -22,8 +22,6 @@ const AddCount = ({show, counts, handleClose, addNewCount, curentUser}) => {
         })
     }
 
-    const db = firebase.firestore();
-
     const onAddCount = (e) => {
         e.preventDefault();
         setValidated(true);
@@ -34,24 +32,12 @@ const AddCount = ({show, counts, handleClose, addNewCount, curentUser}) => {
             return
         }
 
-        if(curentUser) {
-            db.collection(`${curentUser.uid}Counts`).add({
-                title: newCount.title,
-                sum: newCount.sum,
-            })
-            .then(function(docRef) {
-                addNewCount({title: newCount.title, sum: newCount.sum, id: docRef.id});
-                setValidated(false);
-                handleClose();
-            })
-            .catch(function(error) {
-                console.error("Error adding count: ", error);
-        });
-        } else {
-            const id = Math.max(...counts.map(item => item.id)); 
-            addNewCount({title: newCount.title, sum: newCount.sum, id: id+1});
+        const obj = {
+            title: newCount.title,
+            sum: +newCount.sum
         }
-
+        const firebase = new firebaseService();
+        firebase.setData(curentUser, 'Counts', obj, addNewCount, setValidated, handleClose, counts);
     }
 
     return (

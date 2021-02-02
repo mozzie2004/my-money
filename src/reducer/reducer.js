@@ -73,9 +73,15 @@ const reducer = (state=initialState, action) => {
                 counts: [...state.counts, action.payload]
             }
 
+        case 'ADD-NEW-GROUPE':
+            return {
+                ...state,
+                groupe: [...state.groupe, action.payload]
+            }
+
         case 'ADD-NEW-COUNT-OPERATION':
             const index = state.counts.findIndex(item=>item.id === action.id)
-            const newItem = {...state.counts[index], sum: state.counts[index].sum + action.payload};
+            const newItem = {...state.counts[index], sum: action.payload};
             return {
                 ...state,
                 counts: [...state.counts.slice(0, index), newItem, ...state.counts.slice(index+1)]
