@@ -42,7 +42,7 @@ const AddGroupe = ({show, groupe, handleClose, addNewGroupe, curentUser}) => {
                 <Form noValidate validated={validated} onSubmit={onAddGroupe} >
                     <Form.Group>
                         <Form.Label>Назва групи</Form.Label>
-                        <Form.Control name="name" required type="text" placeholder="Новий група" />
+                        <Form.Control name="name" required type="text" placeholder="Нова група" />
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Вид групи</Form.Label>

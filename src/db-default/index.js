@@ -1,5 +1,5 @@
 const dbDefault = {
-    countsDef: [{title: 'Сейф', sum: 50000, id: 1}, {title: 'Гаманець', sum: 5000, id: 2}, {title: 'Картка', sum: 30000, id: 2}],
+    countsDef: [{title: 'Сейф', sum: 50000, id: 1}, {title: 'Гаманець', sum: 5000, id: 2}, {title: 'Картка', sum: 30000, id: 3}],
     operationsDef: [{
         id: 1,
         date: new Date(),

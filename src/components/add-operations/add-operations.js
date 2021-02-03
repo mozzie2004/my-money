@@ -4,6 +4,7 @@ import {Modal, Form, Button} from 'react-bootstrap';
 import {addNewOperations, addNewCountOperation, groupesLoaded, countsLoaded} from '../../actions';
 import firebaseService from '../../services/fierbaseService';
 import AddGroupe from '../add-groupe/add-groupe';
+import AddCount from '../add-count/add-count';
 
 const AddOperations = ({show, handleClose, handleShow, groupe, counts, addNewOperations, operations, addNewCountOperation, curentUser, groupesLoaded, countsLoaded}) => {
     useEffect(()=>{
@@ -17,6 +18,7 @@ const AddOperations = ({show, handleClose, handleShow, groupe, counts, addNewOpe
 
     const [validated, setValidated] = useState(false);
     const [showGroupe, setShowGroupe] = useState(false);
+    const [showCount, setShowCount] = useState(false);
     const curentDate = new Date().toLocaleDateString('uk', {month: 'numeric', day: 'numeric', year: 'numeric'});
     const value = curentDate.split('.').reverse().join('-');
 
@@ -24,10 +26,22 @@ const AddOperations = ({show, handleClose, handleShow, groupe, counts, addNewOpe
         setShowGroupe(false);
         handleShow();
     }
+
     const handleShowGroupe = () => {
         handleClose();
         setShowGroupe(true);
     }
+
+    const handleCloseCount = () => {
+        setShowCount(false);
+        handleShow();
+    }
+
+    const handleShowCount = () => {
+        handleClose();
+        setShowCount(true);
+    }
+    
 
     const onSubmit = (e)=> {
         e.preventDefault();
@@ -54,6 +68,7 @@ const AddOperations = ({show, handleClose, handleShow, groupe, counts, addNewOpe
     return (
         <>
         <AddGroupe show={showGroupe} handleClose={handleCloseGroupe}/>
+        <AddCount show={showCount} handleClose={handleCloseCount}/>
         <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Добавити операцію</Modal.Title>
@@ -80,16 +95,19 @@ const AddOperations = ({show, handleClose, handleShow, groupe, counts, addNewOpe
                     </div>
                 </Form.Group>
                 <Form.Group>
-                    <Form.Label>списати з рахунку</Form.Label>
-                    <Form.Control name="count" as="select">
-                    {
-                        counts.map(item=>{
-                            return (
-                                <option key={item.id}>{item.title}</option>
-                            )
-                        })
-                    }
-                    </Form.Control>
+                    <Form.Label>провести з рахунку</Form.Label>
+                    <div className="d-flex">
+                        <Form.Control name="count" as="select">
+                            {
+                                counts.map(item=>{
+                                    return (
+                                        <option key={item.id}>{item.title}</option>
+                                    )
+                                })
+                            }
+                        </Form.Control>
+                        <Button onClick={handleShowCount} variant="primary">+</Button>
+                    </div>
                 </Form.Group>
                 <Form.Group>
                     <Form.Label>Сума</Form.Label>

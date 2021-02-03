@@ -9,10 +9,13 @@ import { faBalanceScale, faCoins, faExchangeAlt, faCog} from '@fortawesome/free-
 import firebase from 'firebase';
 import {addErrorLogin, countsLoaded} from '../../actions';
 
+import "./app-header.css"
+
 const AppHeader = ({curentUser, addErrorLogin}) =>{
 
     const [registerShow, setRegisterShow] = useState(false);
     const [loginShow, setLoginShow] = useState(false);
+    const [selectedLink, setSelectedLink] = useState(0);
   
     const handleClose = (modal) =>{ 
         modal(false);
@@ -52,6 +55,27 @@ const AppHeader = ({curentUser, addErrorLogin}) =>{
         )
     }
 
+    const links = [
+        {to: '/', icon: faBalanceScale, pop: 'Мої рахунки'},
+        {to: '#', icon: faCoins, pop: 'ще не працює'},
+        {to: '/operations', icon: faExchangeAlt, pop: 'Транзакції'},
+        {to: '#', icon: faCog, pop: 'ще не працює'}
+        
+
+    ]
+
+    const link = links.map((item, i)=>{
+        const {to, icon, pop} = item;
+        const clazz = selectedLink === i ? 'active' : '';
+        return (
+            <OverlayTrigger  key={i} trigger={['hover', 'focus']} placement="bottom" overlay={popover(pop)}>
+                <Link onClick={()=>setSelectedLink(i)} className={clazz} to={to}>
+                    <FontAwesomeIcon icon={icon} /> 
+                </Link>
+            </OverlayTrigger>
+        )
+    })
+
     return (
         <>
         <Register show={registerShow} handleClose={()=>handleClose(setRegisterShow)}/>
@@ -64,26 +88,7 @@ const AppHeader = ({curentUser, addErrorLogin}) =>{
                     </Col>
                     <Col xs={6}>
                         <Nav className="d-flex flex-row justify-content-around mt-2">
-                        <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover('Мої рахунки')}>
-                            <Link to='/'>
-                                <FontAwesomeIcon icon={faBalanceScale} /> 
-                            </Link>
-                        </OverlayTrigger>
-                        <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover('Бюджети')}>
-                            <Link to='#'>
-                                <FontAwesomeIcon icon={faCoins} />
-                            </Link>
-                        </OverlayTrigger>
-                        <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover('Транзакції')}>
-                            <Link to='/operations'>
-                                <FontAwesomeIcon icon={faExchangeAlt} />
-                            </Link>
-                        </OverlayTrigger>
-                        <OverlayTrigger trigger={['hover', 'focus']} placement="bottom" overlay={popover('Налаштування')}>
-                        <Link to='#'>
-                                <FontAwesomeIcon icon={faCog} />
-                            </Link>
-                        </OverlayTrigger>
+                        {link}
                         </Nav>
                     </Col>
                     <Col xs={3} className={'d-flex justify-content-end'}>

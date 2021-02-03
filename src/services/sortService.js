@@ -33,13 +33,13 @@ export default class sortService {
     }
 
     groupedByMonth = (dataArr) => {
-        const earningsArr = this.getAllEarnings(dataArr);
-        const expensesArr = this.getAllExpenses(dataArr);
+        // const earningsArr = this.getAllEarnings(dataArr);
+        // const expensesArr = this.getAllExpenses(dataArr);
         
-        const earningsByDate = this.groupedByDate(earningsArr);
-        const expensesByDate = this.groupedByDate(expensesArr);
+        // // const earningsByDate = this.groupedByDate(earningsArr);
+        // // const expensesByDate = this.groupedByDate(expensesArr);
 
-        console.log(expensesArr)
+        // console.log(expensesArr)
 
     }
 }

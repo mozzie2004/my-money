@@ -5,8 +5,9 @@ import {addNewCount} from '../../actions';
 import firebaseService from '../../services/fierbaseService';
 
 const AddCount = ({show, counts, handleClose, addNewCount, curentUser}) => {
-    const [newCount, setNewCount] = useState({});
+    const [newCount, setNewCount] = useState({title: '', sum: 0});
     const [validated, setValidated] = useState(false);
+    
 
     const onAddNewTitle = (e) =>{
         setNewCount({
@@ -18,7 +19,7 @@ const AddCount = ({show, counts, handleClose, addNewCount, curentUser}) => {
     const onAddNewSum = (e) =>{
         setNewCount({
             ...newCount,
-            sum: e.target.value
+            sum: +e.target.value
         })
     }
 
@@ -54,7 +55,7 @@ const AddCount = ({show, counts, handleClose, addNewCount, curentUser}) => {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Початковий баланс</Form.Label>
-                        <Form.Control onChange={onAddNewSum} pattern="[0-9]{1,}"  required  type="text" placeholder="0" />
+                        <Form.Control onChange={onAddNewSum} pattern="[0-9]{1,}"  required defaultValue="0"  type="text" placeholder="0" />
                         <Form.Control.Feedback type="invalid">
                            тільки цифри
                         </Form.Control.Feedback>
